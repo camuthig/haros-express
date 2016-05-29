@@ -1,0 +1,15 @@
+{
+	"auth": {
+		"google": {
+			"clientID": "myclientid",
+			"clientSecret": "myclientsecret",
+			"callbackUrl": "http://localhost:3000/auth/google/callback" 
+		},
+		"jwt": {
+			"secret": "thisismysecretet!!!!!!!"
+		}
+	},
+	"database": {
+		"url": "mongodb://localhost:27017/lj_dev"
+	}
+}
