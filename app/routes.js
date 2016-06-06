@@ -1,13 +1,16 @@
-var routes         = require('./routes/index');
-var users          = require('./routes/users');
-var auth           = require('./routes/auth');
-var bodyParser     = require('body-parser');
-var GatewayService = require('./services/gateway');
+var routes              = require('./routes/index');
+var users               = require('./routes/users');
+var auth                = require('./routes/auth');
+var bodyParser          = require('body-parser');
+var GatewayService      = require('./services/gateway');
+var JsonResponseService = require('./services/json');
 
 module.exports = function(app, passport) {
   // Set up the API Gateway routes
   gatewayService = new GatewayService(passport);
   gatewayService.loadServices();
+
+  var jsonResponseService = new JsonResponseService();
 
   app.use(gatewayService.forward);
 

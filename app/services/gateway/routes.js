@@ -3,9 +3,12 @@ var express = require('express');
 var router = express.Router();
 var Service = require('../../models/service');
 var Request = require('./request');
+var Response = require('../json');
 
 GatewayManager = function(){
-  this.request = new Request();
+  this.type = 'service';
+  this.request = new Request(this.type);
+  this.response = new Response(this.type);
 };
 
 GatewayManager.prototype.routes = function(gateway, manager) {
@@ -32,7 +35,7 @@ GatewayManager.prototype.routes = function(gateway, manager) {
               return next(err);
             }
 
-            res.status(201).json(service);
+            res.status(201).json(manager.response.parseObject(service));
           });
         });
       }
@@ -41,12 +44,12 @@ GatewayManager.prototype.routes = function(gateway, manager) {
   }); 
 
   router.get('/reload', function(req, res, next) {
-    gateway.loadServices().then(
+    return gateway.loadServices().then(
       function(success) {
-        res.json({success: true});
+        return res.status(204).send();
       },
       function(err) {
-        next(err);
+        return next(err);
       }
     );
   });
@@ -63,7 +66,7 @@ GatewayManager.prototype.routes = function(gateway, manager) {
         return next(error)
       }
 
-      res.json(service);
+      res.json(manager.response.parseObject(service));
     });
   });
 
@@ -88,7 +91,7 @@ GatewayManager.prototype.routes = function(gateway, manager) {
         return next(err);
       }
 
-      res.json(services);
+      res.json(manager.response.parseObjects(services));
     });
   });
 
@@ -104,7 +107,7 @@ GatewayManager.prototype.routes = function(gateway, manager) {
             return next(err);
           } else {
             // return the entry with status 201
-            res.status(201).json(service);
+            res.status(201).json(manager.response.parseObject(service));
           }
         })
       }

@@ -72,7 +72,7 @@ var ServiceSchema = mongoose.Schema({
   static: {
     type: StaticSchema
   }
-});
+}, { versionKey: false });
 
 ServiceSchema.plugin(uniqueValidator, { message: 'Expected {PATH} to be unique.' });
 

@@ -1,11 +1,15 @@
 var validate = require('validate.js');
+var _ = require('lodash');
+var JsonRequest = require('../json/request');
 
-ServiceRequest = function() {
+ServiceRequest = function(type) {
+  this.type = type;
+  this.request = new JsonRequest(type);
+
   validate.validators.notExist = notExist;
 };
 
 var notExist = function(value, options, key, attributes) {
-  console.log(options);
   if (attributes.hasOwnProperty(key)) {
     return options.hasOwnProperty('message') ? options.message : 'should not exist';
   }
@@ -47,9 +51,17 @@ var postConstraints = {
 
 ServiceRequest.prototype.post = function(req, next) {
   // validate the request and clean it
+  var jsonErrors = this.request.validateCreateResource(req);
+  if (!_.isEmpty(jsonErrors)) {
+    return next(
+      jsonErrors,
+      validate.cleanAttributes(req.body.data.attributes, postConstraints)
+    );
+  }
+
   return next(
-    validate(req.body, postConstraints), 
-    validate.cleanAttributes(req.body, postConstraints)
+    validate(req.body.data.attributes, postConstraints), 
+    validate.cleanAttributes(req.body.data.attributes, postConstraints)
   ); 
 }
 
@@ -82,9 +94,17 @@ var patchConstraints = {
 
 ServiceRequest.prototype.patch = function(req, next) {
   // validate the request and clean it
+  var jsonErrors = this.request.validateResource(req);
+  if (!_.isEmpty(jsonErrors)) {
+    return next(
+      jsonErrors,
+      null
+    );
+  }
+
   return next(
-    validate(req.body, patchConstraints), 
-    validate.cleanAttributes(req.body, patchConstraints)
+    validate(req.body.data.attributes, patchConstraints), 
+    validate.cleanAttributes(req.body.data.attributes, patchConstraints)
   ); 
 }
 

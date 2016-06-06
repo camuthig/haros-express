@@ -11,7 +11,7 @@ What it is not:
 
 ## Future Improvements and To Do's
 
-1. Standardize JSON API probably around the official [spec](jsonapi.org)
+1. Standardize JSON API probably around the official [spec](jsonapi.org) - DONEish
 1. Get some unit tests in there
 1. Add in some simple, extendable frontend components
 1. Add Consul support for forwarded services

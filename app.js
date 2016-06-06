@@ -47,22 +47,11 @@ var mongooseErrors = require('./app/services/mongoose/error');
 
 app.use(mongooseErrors);
 
-
 // Define the global error handler
 var handleGlobalErrors = function (err, req, res, next) {
-  var status = err.status || 500
-  
-  var error = {
-    status: String(status),
-    message: err.message,
-    error: {}
-  }
-
-  if (app.get('env') === 'development') {
-    error.error = err;
-  }
-
-  res.status(status).json(error);
+  var JsonError = require('./app/services/json/error');
+  var jsonError = new JsonError(app);
+  res.status(jsonError.status(err)).json(jsonError.error(err));
 }
 
 app.use(handleGlobalErrors);

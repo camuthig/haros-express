@@ -3,15 +3,19 @@ var MongooseError = require('mongoose/lib/error')
 var _ = require('lodash');
 
 var handleError = function(err, req, res, next) {
-  if (MongooseError.hasOwnProperty(err.message.name) || MongooseError.hasOwnProperty(err.name)) {
+  if (err.hasOwnProperty('message')) {
+    var name = err.name || err.message.name || null;
+  } else {
+    var name = err.name || null;
+  }
+  
+  if (MongooseError.hasOwnProperty(name) || MongooseError.hasOwnProperty(name)) {
     var error = new Error('Internal Error');
 
-    if (err.message.name === 'ValidationError') {
+    if (name === 'ValidationError') {
       // handle a validation error
       error.status = 401;
-      error.message = _.mapValues(err.message.errors, function(details) {
-        return [details.message];
-      });
+      error.errors = err.errors;
     }
 
     return next(error);

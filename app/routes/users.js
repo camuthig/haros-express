@@ -4,6 +4,9 @@ var User = require('../models/user');
 var Request = require('./requests/users');
 var request = new Request();
 var _       = require('lodash');
+var JsonResponse = require('../services/json');
+
+var jsonResponse = new JsonResponse('user');
 
 /* GET users listing. */
 router.get('/', function(req, res, next) {
@@ -18,12 +21,12 @@ router.get('/', function(req, res, next) {
     query.find({email: req.query.email});
   }
 
-  query.exec(function(err, users) {
+  query.select('name email').exec(function(err, users) {
     if (err) {
       return next(err);
     }
 
-    res.json(users);
+    res.json(jsonResponse.parseObjects(users));
   });
 });
 
@@ -32,7 +35,7 @@ router.patch('/:id', function(req, res, next) {
     if (err) {
       return next(err);
     } else {
-      User.findById(req.params.id, function(err, service) {
+      User.findOne({_id: req.params.id}).select('name email').exec(function(err, user) {
         if (err) {
           return next(err);
         }
@@ -43,13 +46,13 @@ router.patch('/:id', function(req, res, next) {
           return next(error)
         }
 
-        service = _.merge(service, body);
-        service.save(function(err) {
+        user = _.merge(user, body);
+        user.save(function(err) {
           if (err) {
             return next(err);
           }
 
-          res.status(200).json(service);
+          res.json(jsonResponse.parseObject(user));
         });
       });
     }
@@ -63,7 +66,7 @@ router.get('/me', function(req, res, next) {
     }
 
 
-    res.json(user);
+    res.json(jsonResponse.parseObject(user));
   });
 });
 
@@ -79,7 +82,7 @@ router.get('/:id', function(req, res, next) {
       return next(error)
     }
 
-    res.json(user);
+    res.json(jsonResponse.parseObject(user));
   });
 });
 

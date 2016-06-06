@@ -34,7 +34,7 @@ var userSchema = mongoose.Schema({
         name         : String
     }
 
-});
+}, { versionKey: false });
 
 // checking if password is valid using bcrypt
 userSchema.methods.validPassword = function(password) {
