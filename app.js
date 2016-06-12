@@ -12,10 +12,11 @@ var session = require('express-session')
 var app = express();
 
 // Connect to the database
-require('./config/database.js')(app, config);
+require('./config/database')(app, config);
 
 // Configure and initialize passport for the app
-require('./config/passport.js')(app, config);
+require('./config/passport')(app, config);
+
 app.use(session({ secret: 'wardenslovetobewardensblah' })); // session secret
 app.use(passport.initialize());
 app.use(passport.session()); // persistent login sessions

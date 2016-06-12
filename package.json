@@ -22,8 +22,8 @@
     "passport": "^0.3.2",
     "passport-google-oauth20": "^1.0.0",
     "passport-jwt": "^2.0.0",
-    "rocky": "^0.4.12",
     "serve-favicon": "~2.3.0",
-    "validate.js": "^0.10.0"
+    "validate.js": "^0.10.0",
+    "haros": "camuthig/haros"
   }
 }

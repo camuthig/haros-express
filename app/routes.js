@@ -2,17 +2,19 @@ var routes              = require('./routes/index');
 var users               = require('./routes/users');
 var auth                = require('./routes/auth');
 var bodyParser          = require('body-parser');
-var GatewayService      = require('./services/gateway');
+var config              = require('config');
+var Haros               = require('haros');
 var JsonResponseService = require('./services/json');
 
 module.exports = function(app, passport) {
   // Set up the API Gateway routes
-  gatewayService = new GatewayService(passport);
-  gatewayService.loadServices();
+  var haros = new Haros(null, {database: config.get('database.url')});
+  haros.use(passport.authenticate('jwt', { session: false}));
+  haros.loadServices();
 
   var jsonResponseService = new JsonResponseService();
 
-  app.use(gatewayService.forward);
+  app.use(haros.forward);
 
   // Add the body parsing only for locally handled APIs
   app.use(bodyParser.json());
@@ -26,6 +28,6 @@ module.exports = function(app, passport) {
   /*
     Handling routes for managing the actual services is the job of the gateway service. 
   */
-  app.use('/services', passport.authenticate('jwt', { session: false}), gatewayService.manage());
+  app.use('/services', passport.authenticate('jwt', { session: false}), haros.routes());
 	
 }
