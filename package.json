@@ -1,6 +1,6 @@
 {
-  "name": "little-john",
-  "version": "0.0.0",
+  "name": "haros-express",
+  "version": "0.1.0",
   "private": true,
   "scripts": {
     "start": "node ./bin/www"
