@@ -3,7 +3,7 @@ var users               = require('./routes/users');
 var auth                = require('./routes/auth');
 var bodyParser          = require('body-parser');
 var config              = require('config');
-var Haros               = require('haros');
+var Haros               = require('haros').GatewayService;
 var JsonResponseService = require('./services/json');
 
 module.exports = function(app, passport) {
@@ -12,9 +12,9 @@ module.exports = function(app, passport) {
   haros.use(passport.authenticate('jwt', { session: false}));
   haros.loadServices();
 
-  var jsonResponseService = new JsonResponseService();
+  app.use(haros.forward());
 
-  app.use(haros.forward);
+  var jsonResponseService = new JsonResponseService();
 
   // Add the body parsing only for locally handled APIs
   app.use(bodyParser.json());
